@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    libpq-dev
+    zip unzip \
+    libpq-dev \
+    nodejs npm
 
 # Install PHP extensions
 RUN docker-php-ext-install \
@@ -28,7 +28,12 @@ WORKDIR /var/www
 
 COPY . .
 
+# Install PHP deps
 RUN composer install --no-dev --optimize-autoloader
+
+# Install JS deps + build Vite
+RUN npm install
+RUN npm run build
 
 RUN chmod -R 777 storage bootstrap/cache
 
